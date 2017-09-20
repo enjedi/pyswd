@@ -5,11 +5,11 @@ import usb.core
 
 
 class STLinkComException(Exception):
-    """Exception"""
+    """Exception raised for errors in STLinkCom."""
 
 
 class STLinkNotFound(Exception):
-    """Exception"""
+    """Exception raised for when no STLink device is connected."""
 
 
 class STLinkV2UsbCom():
