@@ -4,15 +4,15 @@ import usb.core
 # import usb.util
 
 
-class StlinkComException(Exception):
+class STLinkComException(Exception):
     """Exception"""
 
 
-class StlinkNotFound(Exception):
+class STLinkNotFound(Exception):
     """Exception"""
 
 
-class StlinkV2UsbCom():
+class STLinkV2UsbCom():
     """ST-Link/V2 USB communication class"""
     ID_VENDOR = 0x0483
     ID_PRODUCT = 0x3748
@@ -26,13 +26,13 @@ class StlinkV2UsbCom():
             if dev.idVendor == self.ID_VENDOR and dev.idProduct == self.ID_PRODUCT:
                 self._dev = dev
                 return
-        raise StlinkNotFound()
+        raise STLinkNotFound()
 
     def write(self, data, tout=200):
         """Write data to USB pipe"""
         count = self._dev.write(self.PIPE_OUT, data, tout)
         if count != len(data):
-            raise StlinkComException("Error Sending data")
+            raise STLinkComException("Error Sending data")
 
     def read(self, size, tout=200):
         """Read data from USB pipe"""
@@ -46,7 +46,7 @@ class StlinkV2UsbCom():
         return data[:size]
 
 
-class StlinkV21UsbCom(StlinkV2UsbCom):
+class STLinkV21UsbCom(STLinkV2UsbCom):
     """ST-Link/V2-1 USB communication"""
     ID_VENDOR = 0x0483
     ID_PRODUCT = 0x374b
@@ -55,10 +55,10 @@ class StlinkV21UsbCom(StlinkV2UsbCom):
     DEV_NAME = "V2-1"
 
 
-class StlinkCom():
+class STLinkCom():
     """ST-Link communication class"""
     STLINK_CMD_SIZE = 16
-    COM_CLASSES = [StlinkV2UsbCom, StlinkV21UsbCom]
+    COM_CLASSES = [STLinkV2UsbCom, STLinkV21UsbCom]
 
     def __init__(self):
         self._dev = None
@@ -66,10 +66,10 @@ class StlinkCom():
             try:
                 self._dev = com_cls()
                 break
-            except StlinkNotFound:
+            except STLinkNotFound:
                 continue
         else:
-            raise StlinkNotFound()
+            raise STLinkNotFound()
 
     def get_version(self):
         """Get device version"""
@@ -79,7 +79,7 @@ class StlinkCom():
         """Transfer command between ST-Link"""
         try:
             if len(cmd) > self.STLINK_CMD_SIZE:
-                raise StlinkComException("Error too many Bytes in command")
+                raise STLinkComException("Error too many Bytes in command")
             # pad to STLINK_CMD_SIZE
             cmd += [0] * (self.STLINK_CMD_SIZE - len(cmd))
             self._dev.write(cmd, tout)
@@ -88,5 +88,5 @@ class StlinkCom():
             if rx_len:
                 return self._dev.read(rx_len)
         except usb.core.USBError as err:
-            raise StlinkComException("USB Error: %s" % err)
+            raise STLinkComException("USB Error: %s" % err)
         return None
