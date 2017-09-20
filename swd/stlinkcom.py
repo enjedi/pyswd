@@ -25,12 +25,13 @@ class USBComDevice():
             raise DeviceNotFoundError()
         self.PIPE_OUT = dev.PIPE_OUT
         self.PIPE_IN = dev.PIPE_IN
+        self.VERSION = dev.VERSION
 
     def write(self, data, timeout=200):
         """Write data to USB pipe"""
         count = self._dev.write(self.PIPE_OUT, data, timeout)
         if count != len(data):
-            raise USBComException("Error Sending data")
+            raise USBComException("USB Error when sending data")
 
     def read(self, size, timeout=200):
         """Read data from USB pipe"""
@@ -44,40 +45,38 @@ class USBComDevice():
         return data[:size]
 
 
-
-
-class STLinkCom():
-    """ST-Link communication class"""
-    STLINK_CMD_SIZE = 16
-    COM_CLASSES     = [STLinkV2UsbCom, STLinkV21UsbCom]
+class USBCom():
+    """Main USB communication class"""
+    CMD_SIZE_BYTES = 16
 
     def __init__(self):
-        self._dev = None
-        for com_cls in self.COM_CLASSES:
+        for device in iter(DEVICE_LIST):
             try:
-                self._dev = com_cls()
+                self._dev = USBComDevice(device)
                 break
             except DeviceNotFoundError:
                 continue
         else:
-            raise DeviceNotFoundError()
+            raise DeviceNotFoundError("No known SWD devices found.")
 
     def get_version(self):
         """Get device version"""
-        return self._dev.DEV_NAME
+        return self._dev.VERSION
 
     def xfer(self, cmd, data=None, rx_len=0, timeout=200):
-        """Transfer command between ST-Link"""
+        """Transfer command between ST-Link.
+
+        Written command is padded for CMD_SIZE_BYTES
+        """
         try:
-            if len(cmd) > self.STLINK_CMD_SIZE:
-                raise STLinkComException("Error too many Bytes in command")
-            # pad to STLINK_CMD_SIZE
-            cmd += [0] * (self.STLINK_CMD_SIZE - len(cmd))
+            if len(cmd) > self.CMD_SIZE_BYTES:
+                raise USBComException("USB Error: Too many bytes in command")
+            cmd += [0] * (self.CMD_SIZE_BYTES - len(cmd))
             self._dev.write(cmd, timeout)
             if data:
                 self._dev.write(data, timeout)
             if rx_len:
                 return self._dev.read(rx_len)
         except usb.core.USBError as err:
-            raise STLinkComException("USB Error: %s" % err)
+            raise USBComException("USB Error: {}".format(err))
         return None
