@@ -2,11 +2,11 @@
 
 import swd.stlinkcom as stlinkcom
 
-class StlinkException(Exception):
+class STLinkException(Exception):
     """Exception"""
 
 
-class Stlink():
+class STLink():
     """ST-Link protocol"""
     STLINK_GET_VERSION = 0xf1
     STLINK_DEBUG_COMMAND = 0xf2
@@ -85,7 +85,7 @@ class Stlink():
     STLINK_MAXIMUM_TRANSFER_SIZE = 1024
     STLINK_MAXIMUM_8BIT_DATA = 64
 
-    class StlinkVersion():
+    class STLinkVersion():
         """ST-Link version holder class"""
         def __init__(self, dev_ver, ver):
             self._stlink = (ver >> 12) & 0xf
@@ -131,7 +131,7 @@ class Stlink():
 
 
     def __init__(self, swd_frequency=1800000):
-        self._com = stlinkcom.StlinkCom()
+        self._com = stlinkcom.STLinkCom()
         self._version = self.get_version()
         self.leave_state()
         # self._target_volgtage = self.read_target_voltage()
@@ -152,41 +152,41 @@ class Stlink():
 
     def get_version(self):
         """Read and decode version from ST-Link"""
-        res = self._com.xfer([Stlink.STLINK_GET_VERSION, 0x80], rx_len=6)
+        res = self._com.xfer([STLink.STLINK_GET_VERSION, 0x80], rx_len=6)
         dev_ver = self._com.get_version()
         ver = int.from_bytes(res[:2], byteorder='big')
-        return Stlink.StlinkVersion(dev_ver, ver)
+        return STLink.STLinkVersion(dev_ver, ver)
 
     def leave_state(self):
         """Leave current state of ST-Link"""
-        res = self._com.xfer([Stlink.STLINK_GET_CURRENT_MODE], rx_len=2)
-        if res[0] == Stlink.STLINK_MODE_DFU:
-            cmd = [Stlink.STLINK_DFU_COMMAND, Stlink.STLINK_DFU_EXIT]
-        elif res[0] == Stlink.STLINK_MODE_DEBUG:
-            cmd = [Stlink.STLINK_DEBUG_COMMAND, Stlink.STLINK_DEBUG_EXIT]
-        elif res[0] == Stlink.STLINK_MODE_SWIM:
-            cmd = [Stlink.STLINK_SWIM_COMMAND, Stlink.STLINK_SWIM_EXIT]
+        res = self._com.xfer([STLink.STLINK_GET_CURRENT_MODE], rx_len=2)
+        if res[0] == STLink.STLINK_MODE_DFU:
+            cmd = [STLink.STLINK_DFU_COMMAND, STLink.STLINK_DFU_EXIT]
+        elif res[0] == STLink.STLINK_MODE_DEBUG:
+            cmd = [STLink.STLINK_DEBUG_COMMAND, STLink.STLINK_DEBUG_EXIT]
+        elif res[0] == STLink.STLINK_MODE_SWIM:
+            cmd = [STLink.STLINK_SWIM_COMMAND, STLink.STLINK_SWIM_EXIT]
         else:
             return
         self._com.xfer(cmd)
 
     def _set_swd_freq(self, frequency=1800000):
         """Set SWD frequency"""
-        for freq, data in Stlink.STLINK_DEBUG_A2_SWD_FREQ_MAP.items():
+        for freq, data in STLink.STLINK_DEBUG_A2_SWD_FREQ_MAP.items():
             if frequency >= freq:
                 cmd = [
-                    Stlink.STLINK_DEBUG_COMMAND,
-                    Stlink.STLINK_DEBUG_A2_SWD_SET_FREQ,
+                    STLink.STLINK_DEBUG_COMMAND,
+                    STLink.STLINK_DEBUG_A2_SWD_SET_FREQ,
                     data]
                 res = self._com.xfer(cmd, rx_len=2)
                 if res[0] != 0x80:
-                    raise StlinkException("Error switching SWD frequency")
+                    raise STLinkException("Error switching SWD frequency")
                 return
-        raise StlinkException("Selected SWD frequency is too low")
+        raise STLinkException("Selected SWD frequency is too low")
 
     def get_target_voltage(self):
         """Get target voltage from programmer"""
-        res = self._com.xfer([Stlink.STLINK_GET_TARGET_VOLTAGE], rx_len=8)
+        res = self._com.xfer([STLink.STLINK_GET_TARGET_VOLTAGE], rx_len=8)
         an0 = int.from_bytes(res[:4], byteorder='little')
         an1 = int.from_bytes(res[4:8], byteorder='little')
         return 2 * an1 * 1.2 / an0 if an0 != 0 else None
@@ -194,24 +194,24 @@ class Stlink():
     def enter_debug_swd(self):
         """Enter SWD debug mode"""
         cmd = [
-            Stlink.STLINK_DEBUG_COMMAND,
-            Stlink.STLINK_DEBUG_A2_ENTER,
-            Stlink.STLINK_DEBUG_ENTER_SWD]
+            STLink.STLINK_DEBUG_COMMAND,
+            STLink.STLINK_DEBUG_A2_ENTER,
+            STLink.STLINK_DEBUG_ENTER_SWD]
         self._com.xfer(cmd, rx_len=2)
 
     def get_coreid(self):
         """Get core ID from MCU"""
         cmd = [
-            Stlink.STLINK_DEBUG_COMMAND,
-            Stlink.STLINK_DEBUG_READCOREID]
+            STLink.STLINK_DEBUG_COMMAND,
+            STLink.STLINK_DEBUG_READCOREID]
         res = self._com.xfer(cmd, rx_len=4)
         return int.from_bytes(res[:4], byteorder='little')
 
     def get_reg(self, reg):
         """Get core register"""
         cmd = [
-            Stlink.STLINK_DEBUG_COMMAND,
-            Stlink.STLINK_DEBUG_A2_READREG,
+            STLink.STLINK_DEBUG_COMMAND,
+            STLink.STLINK_DEBUG_A2_READREG,
             reg]
         res = self._com.xfer(cmd, rx_len=8)
         return int.from_bytes(res[4:8], byteorder='little')
@@ -219,8 +219,8 @@ class Stlink():
     def set_reg(self, reg, data):
         """Set core register"""
         cmd = [
-            Stlink.STLINK_DEBUG_COMMAND,
-            Stlink.STLINK_DEBUG_A2_WRITEREG,
+            STLink.STLINK_DEBUG_COMMAND,
+            STLink.STLINK_DEBUG_A2_WRITEREG,
             reg]
         cmd.extend(list(data.to_bytes(4, byteorder='little')))
         self._com.xfer(cmd, rx_len=2)
@@ -228,10 +228,10 @@ class Stlink():
     def set_mem32(self, addr, data):
         """Set memory register (32 bits)"""
         if addr % 4:
-            raise StlinkException('address is not in multiples of 4')
+            raise STLinkException('address is not in multiples of 4')
         cmd = [
-            Stlink.STLINK_DEBUG_COMMAND,
-            Stlink.STLINK_DEBUG_A2_WRITEDEBUGREG]
+            STLink.STLINK_DEBUG_COMMAND,
+            STLink.STLINK_DEBUG_A2_WRITEDEBUGREG]
         cmd.extend(list(addr.to_bytes(4, byteorder='little')))
         cmd.extend(list(data.to_bytes(4, byteorder='little')))
         self._com.xfer(cmd, rx_len=2)
@@ -239,10 +239,10 @@ class Stlink():
     def get_mem32(self, addr):
         """Get memory register (32 bits)"""
         if addr % 4:
-            raise StlinkException('address is not in multiples of 4')
+            raise STLinkException('address is not in multiples of 4')
         cmd = [
-            Stlink.STLINK_DEBUG_COMMAND,
-            Stlink.STLINK_DEBUG_A2_READDEBUGREG]
+            STLink.STLINK_DEBUG_COMMAND,
+            STLink.STLINK_DEBUG_A2_READDEBUGREG]
         cmd.extend(list(addr.to_bytes(4, byteorder='little')))
         res = self._com.xfer(cmd, rx_len=8)
         return int.from_bytes(res[4:8], byteorder='little')
@@ -250,14 +250,14 @@ class Stlink():
     def read_mem32(self, addr, size):
         """Read memory (32 bits access)"""
         if addr % 4:
-            raise StlinkException('Address must be in multiples of 4')
+            raise STLinkException('Address must be in multiples of 4')
         if size % 4:
-            raise StlinkException('Size must be in multiples of 4')
-        if size > Stlink.STLINK_MAXIMUM_TRANSFER_SIZE:
-            raise StlinkException('Too much bytes to read')
+            raise STLinkException('Size must be in multiples of 4')
+        if size > STLink.STLINK_MAXIMUM_TRANSFER_SIZE:
+            raise STLinkException('Too much bytes to read')
         cmd = [
-            Stlink.STLINK_DEBUG_COMMAND,
-            Stlink.STLINK_DEBUG_READMEM_32BIT]
+            STLink.STLINK_DEBUG_COMMAND,
+            STLink.STLINK_DEBUG_READMEM_32BIT]
         cmd.extend(list(addr.to_bytes(4, byteorder='little')))
         cmd.extend(list(size.to_bytes(4, byteorder='little')))
         return self._com.xfer(cmd, rx_len=size)
@@ -265,32 +265,32 @@ class Stlink():
     def write_mem32(self, addr, data):
         """Write memory (32 bits access)"""
         if addr % 4:
-            raise StlinkException('Address must be in multiples of 4')
+            raise STLinkException('Address must be in multiples of 4')
         if len(data) % 4:
-            raise StlinkException('Size must be in multiples of 4')
-        if len(data) > Stlink.STLINK_MAXIMUM_TRANSFER_SIZE:
-            raise StlinkException('Too much bytes to write')
+            raise STLinkException('Size must be in multiples of 4')
+        if len(data) > STLink.STLINK_MAXIMUM_TRANSFER_SIZE:
+            raise STLinkException('Too much bytes to write')
         cmd = [
-            Stlink.STLINK_DEBUG_COMMAND,
-            Stlink.STLINK_DEBUG_WRITEMEM_32BIT]
+            STLink.STLINK_DEBUG_COMMAND,
+            STLink.STLINK_DEBUG_WRITEMEM_32BIT]
         cmd.extend(list(addr.to_bytes(4, byteorder='little')))
         cmd.extend(list(len(data).to_bytes(4, byteorder='little')))
         self._com.xfer(cmd, data=data)
 
     def read_mem8(self, addr, size):
         """Read memory (8 bits access)"""
-        if size > Stlink.STLINK_MAXIMUM_8BIT_DATA:
-            raise StlinkException('Too much bytes to read')
-        cmd = [Stlink.STLINK_DEBUG_COMMAND, Stlink.STLINK_DEBUG_READMEM_8BIT]
+        if size > STLink.STLINK_MAXIMUM_8BIT_DATA:
+            raise STLinkException('Too much bytes to read')
+        cmd = [STLink.STLINK_DEBUG_COMMAND, STLink.STLINK_DEBUG_READMEM_8BIT]
         cmd.extend(list(addr.to_bytes(4, byteorder='little')))
         cmd.extend(list(size.to_bytes(4, byteorder='little')))
         return self._com.xfer(cmd, rx_len=size)
 
     def write_mem8(self, addr, data):
         """Write memory (8 bits access)"""
-        if len(data) > Stlink.STLINK_MAXIMUM_8BIT_DATA:
-            raise StlinkException('Too much bytes to write')
-        cmd = [Stlink.STLINK_DEBUG_COMMAND, Stlink.STLINK_DEBUG_WRITEMEM_8BIT]
+        if len(data) > STLink.STLINK_MAXIMUM_8BIT_DATA:
+            raise STLinkException('Too much bytes to write')
+        cmd = [STLink.STLINK_DEBUG_COMMAND, STLink.STLINK_DEBUG_WRITEMEM_8BIT]
         cmd.extend(list(addr.to_bytes(4, byteorder='little')))
         cmd.extend(list(len(data).to_bytes(4, byteorder='little')))
         self._com.xfer(cmd, data=data)
