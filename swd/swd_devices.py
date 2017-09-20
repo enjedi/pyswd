@@ -12,6 +12,7 @@ class STLinkV2():
     ID_PRODUCT  = 0x3748
     PIPE_OUT    = 0x02
     PIPE_IN     = 0x81
+    VERSION     = "V2"
 
 
 class STLinkV21():
@@ -20,6 +21,7 @@ class STLinkV21():
     ID_PRODUCT  = 0x374b
     PIPE_OUT    = 0x01
     PIPE_IN     = 0x81
+    VERSION     = "V2-1"
 
 
 DEVICE_LIST = {
