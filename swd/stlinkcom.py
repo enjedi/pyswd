@@ -8,7 +8,7 @@ class STLinkComException(Exception):
     """Exception raised for errors in STLinkCom."""
 
 
-class STLinkNotFound(Exception):
+class STLinkNotFound(STLinkComException):
     """Exception raised for when no STLink device is connected."""
 
 
