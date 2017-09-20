@@ -28,13 +28,13 @@ class STLinkV2UsbCom():
                 return
         raise DeviceNotFoundError()
 
-    def write(self, data, tout=200):
+    def write(self, data, timeout=200):
         """Write data to USB pipe"""
-        count = self._dev.write(self.PIPE_OUT, data, tout)
+        count = self._dev.write(self.PIPE_OUT, data, timeout)
         if count != len(data):
             raise STLinkComException("Error Sending data")
 
-    def read(self, size, tout=200):
+    def read(self, size, timeout=200):
         """Read data from USB pipe"""
         read_size = size
         if read_size < 64:
@@ -42,7 +42,7 @@ class STLinkV2UsbCom():
         elif read_size % 4:
             read_size += 3
             read_size &= 0xffc
-        data = self._dev.read(self.PIPE_IN, read_size, tout).tolist()
+        data = self._dev.read(self.PIPE_IN, read_size, timeout).tolist()
         return data[:size]
 
 
@@ -75,16 +75,16 @@ class STLinkCom():
         """Get device version"""
         return self._dev.DEV_NAME
 
-    def xfer(self, cmd, data=None, rx_len=0, tout=200):
+    def xfer(self, cmd, data=None, rx_len=0, timeout=200):
         """Transfer command between ST-Link"""
         try:
             if len(cmd) > self.STLINK_CMD_SIZE:
                 raise STLinkComException("Error too many Bytes in command")
             # pad to STLINK_CMD_SIZE
             cmd += [0] * (self.STLINK_CMD_SIZE - len(cmd))
-            self._dev.write(cmd, tout)
+            self._dev.write(cmd, timeout)
             if data:
-                self._dev.write(data, tout)
+                self._dev.write(data, timeout)
             if rx_len:
                 return self._dev.read(rx_len)
         except usb.core.USBError as err:
