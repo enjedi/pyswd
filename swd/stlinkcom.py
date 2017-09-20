@@ -8,7 +8,7 @@ class STLinkComException(Exception):
     """Exception raised for errors in STLinkCom."""
 
 
-class STLinkNotFound(STLinkComException):
+class DeviceNotFoundError(STLinkComException):
     """Exception raised for when no STLink device is connected."""
 
 
@@ -26,7 +26,7 @@ class STLinkV2UsbCom():
             if dev.idVendor == self.ID_VENDOR and dev.idProduct == self.ID_PRODUCT:
                 self._dev = dev
                 return
-        raise STLinkNotFound()
+        raise DeviceNotFoundError()
 
     def write(self, data, tout=200):
         """Write data to USB pipe"""
@@ -66,10 +66,10 @@ class STLinkCom():
             try:
                 self._dev = com_cls()
                 break
-            except STLinkNotFound:
+            except DeviceNotFoundError:
                 continue
         else:
-            raise STLinkNotFound()
+            raise DeviceNotFoundError()
 
     def get_version(self):
         """Get device version"""
