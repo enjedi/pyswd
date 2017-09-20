@@ -3,7 +3,7 @@
 import swd.stlinkcom as stlinkcom
 
 class STLinkException(Exception):
-    """Exception"""
+    """Exception raised for general issues in the STLink class."""
 
 
 class STLink():
