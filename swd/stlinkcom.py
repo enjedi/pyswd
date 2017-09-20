@@ -1,38 +1,36 @@
-"""ST-Link/V2 USB communication"""
-
+"""usb_com.py
+USB communication between the host and SWD hardware device.
+"""
 import usb.core
-# import usb.util
+from swd_devices import DEVICE_LIST
 
 
-class STLinkComException(Exception):
-    """Exception raised for errors in STLinkCom."""
+class USBComException(Exception):
+    """Exception raised for errors in USB communication to an SWD device."""
 
 
-class DeviceNotFoundError(STLinkComException):
+class DeviceNotFoundError(USBComException):
     """Exception raised for when no STLink device is connected."""
 
 
-class STLinkV2UsbCom():
-    """ST-Link/V2 USB communication class"""
-    ID_VENDOR   = 0x0483
-    ID_PRODUCT  = 0x3748
-    PIPE_OUT    = 0x02
-    PIPE_IN     = 0x81
-    DEV_NAME    = "V2"
-
-    def __init__(self):
-        self._dev = None
-        for dev in usb.core.find(find_all=True):
-            if dev.idVendor == self.ID_VENDOR and dev.idProduct == self.ID_PRODUCT:
-                self._dev = dev
-                return
-        raise DeviceNotFoundError()
+class USBComDevice():
+    """ USB device communication class"""
+    def __init__(self, device):
+        dev = DEVICE_LIST.get(device)
+        try:
+            self._dev = usb.core.find(idVendor=dev.ID_VENDOR, idProduct=dev.ID_PRODUCT)
+        except AttributeError:
+            pass
+        if self._dev is None:
+            raise DeviceNotFoundError()
+        self.PIPE_OUT = dev.PIPE_OUT
+        self.PIPE_IN = dev.PIPE_IN
 
     def write(self, data, timeout=200):
         """Write data to USB pipe"""
         count = self._dev.write(self.PIPE_OUT, data, timeout)
         if count != len(data):
-            raise STLinkComException("Error Sending data")
+            raise USBComException("Error Sending data")
 
     def read(self, size, timeout=200):
         """Read data from USB pipe"""
@@ -46,13 +44,6 @@ class STLinkV2UsbCom():
         return data[:size]
 
 
-class STLinkV21UsbCom(STLinkV2UsbCom):
-    """ST-Link/V2-1 USB communication"""
-    ID_VENDOR   = 0x0483
-    ID_PRODUCT  = 0x374b
-    PIPE_OUT    = 0x01
-    PIPE_IN     = 0x81
-    DEV_NAME    = "V2-1"
 
 
 class STLinkCom():
