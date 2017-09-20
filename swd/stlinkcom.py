@@ -14,11 +14,11 @@ class STLinkNotFound(STLinkComException):
 
 class STLinkV2UsbCom():
     """ST-Link/V2 USB communication class"""
-    ID_VENDOR = 0x0483
-    ID_PRODUCT = 0x3748
-    PIPE_OUT = 0x02
-    PIPE_IN = 0x81
-    DEV_NAME = "V2"
+    ID_VENDOR   = 0x0483
+    ID_PRODUCT  = 0x3748
+    PIPE_OUT    = 0x02
+    PIPE_IN     = 0x81
+    DEV_NAME    = "V2"
 
     def __init__(self):
         self._dev = None
@@ -48,17 +48,17 @@ class STLinkV2UsbCom():
 
 class STLinkV21UsbCom(STLinkV2UsbCom):
     """ST-Link/V2-1 USB communication"""
-    ID_VENDOR = 0x0483
-    ID_PRODUCT = 0x374b
-    PIPE_OUT = 0x01
-    PIPE_IN = 0x81
-    DEV_NAME = "V2-1"
+    ID_VENDOR   = 0x0483
+    ID_PRODUCT  = 0x374b
+    PIPE_OUT    = 0x01
+    PIPE_IN     = 0x81
+    DEV_NAME    = "V2-1"
 
 
 class STLinkCom():
     """ST-Link communication class"""
     STLINK_CMD_SIZE = 16
-    COM_CLASSES = [STLinkV2UsbCom, STLinkV21UsbCom]
+    COM_CLASSES     = [STLinkV2UsbCom, STLinkV21UsbCom]
 
     def __init__(self):
         self._dev = None
