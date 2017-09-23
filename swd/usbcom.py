@@ -2,7 +2,7 @@
 USB communication between the host and SWD hardware device.
 """
 import usb.core
-from swd_devices import DEVICE_LIST
+from devices import DEVICE_LIST
 
 
 class USBComException(Exception):
