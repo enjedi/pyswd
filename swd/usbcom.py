@@ -77,3 +77,7 @@ class USBCom():
         except usb.core.USBError as err:
             raise USBComException("USB Error: {}".format(err))
         return None
+
+if __name__ == "__main__":
+    dev = USBCom()
+    print(dev.get_version)
