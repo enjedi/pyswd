@@ -1,4 +1,7 @@
-"""ST-Link/V2 protocol"""
+"""swd.py
+SWD functionality for Python. This commandeers USB protocols of third-party hardware
+devices and uses them for general SWD use.
+"""
 
 import usbcom
 
