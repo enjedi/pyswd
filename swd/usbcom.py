@@ -106,4 +106,5 @@ if __name__ == "__main__":
     print(dev.get_device_list())
     d = dev.get_device()
     print(d)
-    print(hex(d.Cmd.GET_VERSION))
+    print(hex(d.CMD.GET_VERSION))
+    print(dev.get_device_info())
