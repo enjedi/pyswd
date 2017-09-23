@@ -1,4 +1,4 @@
-"""swd_devices.py
+"""devices.py
 This is a collection of classes that represent available SWD hardware devices for use
 with this library.
 
