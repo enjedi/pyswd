@@ -8,50 +8,6 @@ class STLinkException(Exception):
 
 class STLink():
     """ST-Link protocol"""
-    class STLinkVersion():
-        """ST-Link version holder class"""
-        def __init__(self, dev_ver, ver):
-            self._stlink = (ver >> 12) & 0xf
-            self._jtag = (ver >> 6) & 0x3f
-            self._swim = ver & 0x3f if dev_ver == 'V2' else None
-            self._mass = ver & 0x3f if dev_ver == 'V2-1' else None
-            self._api = 2 if self._jtag > 11 else 1
-            self._str = "ST-Link/%s V%dJ%d" % (dev_ver, self._stlink, self._jtag)
-            if dev_ver == 'V2':
-                self._str += "S%d" % self._swim
-            if dev_ver == 'V2-1':
-                self._str += "M%d" % self._mass
-
-        @property
-        def stlink(self):
-            """Major version"""
-            return self._stlink
-
-        @property
-        def jtag(self):
-            """Jtag version"""
-            return self._jtag
-
-        @property
-        def swim(self):
-            """SWIM version"""
-            return self._swim
-
-        @property
-        def mass(self):
-            """Mass storage version"""
-            return self._mass
-
-        @property
-        def api(self):
-            """API version"""
-            return self._api
-
-        @property
-        def str(self):
-            """String representation"""
-            return self._str
-
 
     def __init__(self, swd_frequency=1800000):
         self._com = stlinkcom.STLinkCom()
@@ -69,16 +25,9 @@ class STLink():
         return self._com
 
     @property
-    def version(self):
-        """ST-Link version"""
-        return self._version
-
-    def get_version(self):
-        """Read and decode version from ST-Link"""
-        res = self._com.xfer([STLink.STLINK_GET_VERSION, 0x80], rx_len=6)
-        dev_ver = self._com.get_version()
-        ver = int.from_bytes(res[:2], byteorder='big')
-        return STLink.STLinkVersion(dev_ver, ver)
+    def info(self):
+        """Device information"""
+        return self._info
 
     def leave_state(self):
         """Leave current state of ST-Link"""
