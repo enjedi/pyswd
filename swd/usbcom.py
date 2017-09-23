@@ -80,4 +80,4 @@ class USBCom():
 
 if __name__ == "__main__":
     dev = USBCom()
-    print(dev.get_version)
+    print(dev.get_version())
