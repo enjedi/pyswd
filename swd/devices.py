@@ -21,13 +21,13 @@ class Device(object):
         return self._description
 
 
-class STLinkV2(Device):
-    """ST-Link/V2 USB Device"""
-    def __init__(self, description):
-        super().__init__(description)
+class STLink(Device):
+    """ST-Link USB Device"""
+    def __init__(self, version):
+        super().__init__("{0}/{1}".format("STLink", version))
         self.ID_VENDOR   = 0x0483
-        self.ID_PRODUCT  = 0x3748
-        self.PIPE_OUT    = 0x02
+        self.ID_PRODUCT  = 0x374b if version == "V2-1" else 0x3748
+        self.PIPE_OUT    = 0x01 if version == "V2-1" else 0x02
         self.PIPE_IN     = 0x81
 
     class Cmd():
@@ -124,16 +124,6 @@ class STLinkV2(Device):
             # 15000: 265,
             # 5000:  798
         }
-
-
-class STLinkV21(Device):
-    """ST-Link/V2-1 USB Device"""
-    def __init__(self, description):
-        super().__init__(description)
-        self.ID_VENDOR   = 0x0483
-        self.ID_PRODUCT  = 0x374b
-        self.PIPE_OUT    = 0x01
-        self.PIPE_IN     = 0x81
 
 
 DEVICE_LIST = {
