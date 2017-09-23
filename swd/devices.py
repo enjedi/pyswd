@@ -7,7 +7,10 @@ by device name, i.e. the class name.
 """
 
 class Device(object):
-    """Prototype class for SWD devices."""
+    """Prototype class for SWD devices.
+
+    Default MAX sizes are defaulted to STLink device values.
+    """
     def __init__(self, description):
         self._description       = description
         self.ID_VENDOR          = None
@@ -22,8 +25,15 @@ class Device(object):
 
 
 class STLink(Device):
-    """ST-Link USB Device"""
+    """ST-Link USB Device.
+
+    Compatible STLink device versions are V2 and V2-1.
+    """
     def __init__(self, version):
+        """Initialize a given STLink based on version.
+
+        :param version: Device version string (STLink/<ver> in list of attached USB devices)
+        """
         super().__init__("{0}/{1}".format("STLink", version))
         self.ID_VENDOR   = 0x0483
         self.ID_PRODUCT  = 0x374b if version == "V2-1" else 0x3748
