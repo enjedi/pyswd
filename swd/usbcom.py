@@ -58,7 +58,7 @@ class USBCom():
 
     def get_version(self):
         """Get device version"""
-        return self._usb.dev.VERSION
+        return self._usb.dev
 
     def xfer(self, cmd, data=None, rx_len=0, timeout=200):
         """Transfer command between ST-Link.
