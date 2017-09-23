@@ -66,6 +66,10 @@ class USBCom():
         """Get device version"""
         return self._usb.dev
 
+    def get_device_list(self):
+        """Return a list of compatible devices."""
+        return list(device for device in iter(DEVICE_LIST))
+
     def xfer(self, cmd, data=None, rx_len=0, timeout=200):
         """Transfer command between ST-Link.
 
@@ -87,3 +91,4 @@ class USBCom():
 if __name__ == "__main__":
     dev = USBCom()
     print(dev.get_version())
+    print(dev.get_device_list())
