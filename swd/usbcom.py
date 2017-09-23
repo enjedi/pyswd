@@ -62,8 +62,12 @@ class USBCom():
 
         raise DeviceNotFoundError("No known SWD devices found.")
 
-    def get_version(self):
-        """Get device version"""
+    def get_device(self):
+        """Get the acquired device.
+
+        This returns the device object but can also be used to print
+        the device description string.
+        """
         return self._usb.dev
 
     def get_device_list(self):
