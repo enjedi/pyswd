@@ -94,5 +94,7 @@ class USBCom():
 
 if __name__ == "__main__":
     dev = USBCom()
-    print(dev.get_version())
     print(dev.get_device_list())
+    d = dev.get_device()
+    print(d)
+    print(hex(d.Cmd.GET_VERSION))
