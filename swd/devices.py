@@ -137,6 +137,6 @@ class STLink(Device):
 
 
 DEVICE_LIST = {
-    STLinkV2.__name__   : STLinkV2("STLink V2"),
-    STLinkV21.__name__  : STLinkV21("STLink V2-1")
+    "STLink/V2"   : STLink("V2"),
+    "STLink/V2-1" : STLink("V2-1")
 }
