@@ -40,7 +40,7 @@ class STLink(Device):
         self.PIPE_OUT    = 0x01 if version == "V2-1" else 0x02
         self.PIPE_IN     = 0x81
 
-    class Cmd():
+    class CMD():
         """Enumeration of command codes."""
         GET_VERSION         = 0xf1
         DEBUG               = 0xf2
@@ -49,13 +49,13 @@ class STLink(Device):
         GET_CURRENT_MODE    = 0xf5
         GET_TARGET_VOLTAGE  = 0xf7
 
-    class Mode():
+    class MODE():
         """Enumeration of operation mode codes."""
-        (MODE_DFU,
-        MODE_MASS,
-        MODE_DEBUG,
-        MODE_SWIM,
-        MODE_BOOTLOADER) = range(0, 5)
+        (DFU,
+        MASS,
+        DEBUG,
+        SWIM,
+        BOOTLOADER) = range(0, 5)
 
     class DFU():
         """Enumeration of DFU codes."""
@@ -66,7 +66,7 @@ class STLink(Device):
         ENTER = 0x00
         EXIT  = 0x01
 
-    class Debug():
+    class DEBUG():
         """Enumeration of Debug codes."""
         ENTER_JTAG      = 0x00
         STATUS          = 0x01
@@ -114,7 +114,7 @@ class STLink(Device):
             GET_TRACE_NB     = 0x42
             SWD_SET_FREQ     = 0x43
 
-    class SWDFrequency():
+    class FREQUENCY():
         """Enumeration of available SWD frequencies.
 
         Default frequency is 1.8MHz
