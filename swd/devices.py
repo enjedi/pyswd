@@ -7,12 +7,15 @@ by device name, i.e. the class name.
 """
 
 class Device(object):
+    """Prototype class for SWD devices."""
     def __init__(self, description):
-        self._description   = description
-        self.ID_VENDOR      = None
-        self.ID_PRODUCT     = None
-        self.PIPE_OUT       = None
-        self.PIPE_IN        = None
+        self._description       = description
+        self.ID_VENDOR          = None
+        self.ID_PRODUCT         = None
+        self.PIPE_OUT           = None
+        self.PIPE_IN            = None
+        self.MAX_TRANSFER_SIZE  = 1024
+        self.MAX_8BIT_DATA      = 64
 
     def __str__(self):
         return self._description
@@ -26,9 +29,6 @@ class STLinkV2(Device):
         self.ID_PRODUCT  = 0x3748
         self.PIPE_OUT    = 0x02
         self.PIPE_IN     = 0x81
-        self.MAX_TRANSFER_SIZE = 1024
-        self.MAX_8BIT_DATA = 64
-
 
     class Cmd():
         """Enumeration of command codes."""
