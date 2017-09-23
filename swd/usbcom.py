@@ -21,8 +21,10 @@ class USBComDevice():
             self._usb = usb.core.find(idVendor=self.dev.ID_VENDOR, idProduct=self.dev.ID_PRODUCT)
         except AttributeError:
             pass
-        if self._usb is None:
-            raise DeviceNotFoundError()
+        else:
+            if self._usb is not None:
+                return
+        raise DeviceNotFoundError()
 
     def write(self, data, timeout=200):
         """Write data to USB pipe"""
