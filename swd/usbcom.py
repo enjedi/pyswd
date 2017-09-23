@@ -48,15 +48,19 @@ class USBCom():
     """Main USB communication class"""
     CMD_SIZE_BYTES = 16
 
-    def __init__(self):
-        for device in iter(DEVICE_LIST):
-            try:
-                self._usb = USBComDevice(device)
-                break
-            except DeviceNotFoundError:
-                continue
+    def __init__(self, device=None):
+        if device is not None:
+            self._usb = USBComDevice(device)
+            return
         else:
-            raise DeviceNotFoundError("No known SWD devices found.")
+            for device in iter(DEVICE_LIST):
+                try:
+                    self._usb = USBComDevice(device)
+                    return
+                except DeviceNotFoundError:
+                    continue
+
+        raise DeviceNotFoundError("No known SWD devices found.")
 
     def get_version(self):
         """Get device version"""
