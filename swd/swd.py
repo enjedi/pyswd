@@ -3,8 +3,7 @@ SWD functionality for Python. This commandeers USB protocols of third-party hard
 devices and uses them for general SWD use.
 """
 
-import usbcom
-
+import swd.usbcom as usbcom
 
 class SWDException(Exception):
     """Exception raised for general SWD issues."""
