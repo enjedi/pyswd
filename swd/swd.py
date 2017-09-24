@@ -12,13 +12,16 @@ class SWDException(Exception):
 
 class SWD():
     """ST-Link protocol"""
-    def __init__(self, use_device=None):
-        self._comm = usbcom.USBCom(use_device)
+    def __init__(self, **kwargs):
+        """Initialize SWD communication and sanity check connection.
+
+        :kwarg device:  Device type to use for communication
+        :kwarg speed:   Desired SWD frequency in KHz
+        """
+        self._comm = usbcom.USBCom(kwargs.get("device"))
         self._dev = self._comm.get_device()
         self.leave_state()
-#        self._target_volgtage = self.read_target_voltage()
-#        if self._version.jtag >= 22:
-#            self._set_swd_freq(swd_frequency)
+        self._set_swd_freq(kwargs.get("speed"))
 #        self.enter_debug_swd()
 #         self._coreid = self.get_coreid()
 
