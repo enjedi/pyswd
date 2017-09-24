@@ -14,7 +14,8 @@ class SWD():
     """ST-Link protocol"""
     def __init__(self, use_device=None):
         self._comm = usbcom.USBCom(use_device)
-#        self.leave_state()
+        self._dev = self._comm.get_device()
+        self.leave_state()
 #        self._target_volgtage = self.read_target_voltage()
 #        if self._version.jtag >= 22:
 #            self._set_swd_freq(swd_frequency)
@@ -26,18 +27,18 @@ class SWD():
         """Communication class"""
         return self._comm
 
-#    def leave_state(self):
-#        """Leave current state of ST-Link"""
-#        res = self._com.xfer([STLink.STLINK_GET_CURRENT_MODE], rx_len=2)
-#        if res[0] == STLink.STLINK_MODE_DFU:
-#            cmd = [STLink.STLINK_DFU_COMMAND, STLink.STLINK_DFU_EXIT]
-#        elif res[0] == STLink.STLINK_MODE_DEBUG:
-#            cmd = [STLink.STLINK_DEBUG_COMMAND, STLink.STLINK_DEBUG_EXIT]
-#        elif res[0] == STLink.STLINK_MODE_SWIM:
-#            cmd = [STLink.STLINK_SWIM_COMMAND, STLink.STLINK_SWIM_EXIT]
-#        else:
-#            return
-#        self._com.xfer(cmd)
+    def leave_state(self):
+        """Leave current state of ST-Link"""
+        r = self._comm.xfer([self._dev.CMD.GET_CURRENT_MODE], rx_len=2)
+        if r[0] == self._dev.MODE.DFU:
+            cmd = [self._dev.CMD.DFU, self._dev.DFU.EXIT]
+        elif r[0] == self._dev.MODE.DEBUG:
+            cmd = [self._dev.CMD.DEBUG, self._dev.DEBUG.EXIT]
+        elif r[0] == self._dev.MODE.SWIM:
+            cmd = [self._dev.CMD.SWIM, self._dev.SWIM.EXIT]
+        else:
+            return
+        self._comm.xfer(cmd)
 
 #    def _set_swd_freq(self, frequency=1800000):
 #        """Set SWD frequency"""
