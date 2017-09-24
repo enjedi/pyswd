@@ -140,6 +140,10 @@ class STLink(Device):
         }
 
     def load_version_info(self, version):
+        """Load device version information by parsing the device's version register.
+
+        :param version: Version register read from USB
+        """
         stlink = (version >> 12) & 0xf
         jtag = (version >> 6) & 0x3f
         mass_swim = (version & 0x3f)
