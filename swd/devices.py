@@ -119,11 +119,8 @@ class STLink(Device):
             SWD_SET_FREQ     = 0x43
 
     class FREQUENCY():
-        """Enumeration of available SWD frequencies.
-
-        Default frequency is 1.8MHz
-        """
-        DEFAULT = 1,
+        """Available compatible SWD frequencies."""
+        DEFAULT = 1800
         MAP = {
             4000: 0,
             1800: 1,
