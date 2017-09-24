@@ -75,13 +75,12 @@ class USBCom():
         return list(device for device in iter(DEVICE_LIST))
 
     def get_device_info(self):
-        """Read and decode device information"""
-        if self._usb.dev.INFO is None:
+        """Return details of the USB device"""
+        if self._usb.dev.VERSION is None:
             r = self.xfer([self._usb.dev.CMD.GET_VERSION, 0x80], rx_len=6)
             read_version = int.from_bytes(r[:2], byteorder='big')
-            self._usb.dev.load_device_info(read_version)
-        return self._usb.dev.INFO
-
+            self._usb.dev.load_version_info(read_version)
+        return "{0}\n{1}".format(self._usb.dev.VERSION, self._usb._usb)
 
     def xfer(self, cmd, data=None, rx_len=0, timeout=200):
         """Transfer command between ST-Link.
