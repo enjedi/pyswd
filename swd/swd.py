@@ -26,8 +26,8 @@ class SWD():
         self._dev = self._comm.get_device()
         self.leave_state()
         self._set_swd_freq(kwargs.get("speed"))
-#        self.enter_debug_swd()
-#         self._coreid = self.get_coreid()
+        self.enter_debug_swd()
+        self._coreid = hex(self.get_coreid())
 
     @property
     def comm(self):
@@ -73,22 +73,22 @@ class SWD():
         an1 = int.from_bytes(res[4:8], byteorder='little')
         return round(2 * an1 * 1.2 / an0, 3) if an0 != 0 else None
 
-#    def enter_debug_swd(self):
-#        """Enter SWD debug mode"""
-#        cmd = [
-#            STLink.STLINK_DEBUG_COMMAND,
-#            STLink.STLINK_DEBUG_A2_ENTER,
-#            STLink.STLINK_DEBUG_ENTER_SWD]
-#        self._com.xfer(cmd, rx_len=2)
-#
-#    def get_coreid(self):
-#        """Get core ID from MCU"""
-#        cmd = [
-#            STLink.STLINK_DEBUG_COMMAND,
-#            STLink.STLINK_DEBUG_READCOREID]
-#        res = self._com.xfer(cmd, rx_len=4)
-#        return int.from_bytes(res[:4], byteorder='little')
-#
+    def enter_debug_swd(self):
+        """Enter SWD debug mode"""
+        cmd = [
+            self._dev.CMD.DEBUG,
+            self._dev.DEBUG.A2.ENTER,
+            self._dev.DEBUG.ENTER_SWD]
+        self._comm.xfer(cmd, rx_len=2)
+
+    def get_coreid(self):
+        """Get core ID from MCU"""
+        cmd = [
+            self._dev.CMD.DEBUG,
+            self._dev.DEBUG.READCOREID]
+        res = self._comm.xfer(cmd, rx_len=4)
+        return int.from_bytes(res[:4], byteorder='little')
+
 #    def get_reg(self, reg):
 #        """Get core register"""
 #        cmd = [
