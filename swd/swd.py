@@ -66,13 +66,13 @@ class SWD():
         if res[0] != 0x80:
             raise usbcom.USBComException("Error when switching SWD frequency.")
 
-#    def get_target_voltage(self):
-#        """Get target voltage from programmer"""
-#        res = self._com.xfer([STLink.STLINK_GET_TARGET_VOLTAGE], rx_len=8)
-#        an0 = int.from_bytes(res[:4], byteorder='little')
-#        an1 = int.from_bytes(res[4:8], byteorder='little')
-#        return 2 * an1 * 1.2 / an0 if an0 != 0 else None
-#
+    def get_target_voltage(self):
+        """Get target voltage from device"""
+        res = self._comm.xfer([self._dev.CMD.GET_TARGET_VOLTAGE], rx_len=8)
+        an0 = int.from_bytes(res[:4], byteorder='little')
+        an1 = int.from_bytes(res[4:8], byteorder='little')
+        return round(2 * an1 * 1.2 / an0, 3) if an0 != 0 else None
+
 #    def enter_debug_swd(self):
 #        """Enter SWD debug mode"""
 #        cmd = [
@@ -179,3 +179,4 @@ class SWD():
 
 if __name__ == "__main__":
     swd = SWD()
+    print(swd.get_target_voltage())
