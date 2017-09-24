@@ -47,20 +47,25 @@ class SWD():
             return
         self._comm.xfer(cmd)
 
-#    def _set_swd_freq(self, frequency=1800000):
-#        """Set SWD frequency"""
-#        for freq, data in STLink.STLINK_DEBUG_A2_SWD_FREQ_MAP.items():
-#            if frequency >= freq:
-#                cmd = [
-#                    STLink.STLINK_DEBUG_COMMAND,
-#                    STLink.STLINK_DEBUG_A2_SWD_SET_FREQ,
-#                    data]
-#                res = self._com.xfer(cmd, rx_len=2)
-#                if res[0] != 0x80:
-#                    raise STLinkException("Error switching SWD frequency")
-#                return
-#        raise STLinkException("Selected SWD frequency is too low")
-#
+    def _set_swd_freq(self, frequency=None):
+        """Set SWD frequency.
+
+        Defaults to device DEFAULT if None.
+
+        :param frequency: Desired SWD frequency, in KHz.
+        """
+        if not frequency:
+            frequency = self._dev.FREQUENCY.DEFAULT
+
+        data = self._dev.FREQUENCY.MAP.get(frequency)
+        if not data:
+            raise InvalidFrequencyError("Frequency '{}' is not supported.".format(frequency))
+
+        cmd = [self._dev.CMD.DEBUG, self._dev.DEBUG.A2.SWD_SET_FREQ, data]
+        res = self._comm.xfer(cmd, rx_len=2)
+        if res[0] != 0x80:
+            raise usbcom.USBComException("Error when switching SWD frequency.")
+
 #    def get_target_voltage(self):
 #        """Get target voltage from programmer"""
 #        res = self._com.xfer([STLink.STLINK_GET_TARGET_VOLTAGE], rx_len=8)
