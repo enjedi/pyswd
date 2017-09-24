@@ -89,7 +89,7 @@ class SWD():
         res = self._comm.xfer(cmd, rx_len=4)
         return int.from_bytes(res[:4], byteorder='little')
 
-    def get_reg(self, reg):
+    def get_core_reg(self, reg):
         """Get core register"""
         cmd = [
             self._dev.CMD.DEBUG,
@@ -98,7 +98,7 @@ class SWD():
         res = self._comm.xfer(cmd, rx_len=8)
         return int.from_bytes(res[4:8], byteorder='little')
 
-    def set_reg(self, reg, data):
+    def set_core_reg(self, reg, data):
         """Set core register"""
         cmd = [
             self._dev.CMD.DEBUG,
@@ -201,4 +201,4 @@ if __name__ == "__main__":
     swd.write_mem8(set_reg, l)
     data = swd.read_mem8(set_reg, len(l))
     print(' '.join(['%02x' % d for d in data]))
-    print("Read R1: {}".format(hex(swd.get_reg(1))))
+    print("Read R1: {}".format(hex(swd.get_core_reg(1))))
