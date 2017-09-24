@@ -22,17 +22,23 @@ This installation procedure is targeted for Debian-based Linux distributions.
 
 Install the basic packages:
 
-`sudo apt-get install python3-dev libusb-1.0.0`
+```
+sudo apt-get install python3-dev libusb-1.0.0
+```
 
 [Install PyUSB](https://github.com/walac/pyusb).
 
 For system-wide installation of this module:
 
-`sudo python setup.py install`
+```
+sudo python setup.py install
+```
 
 For only local user installation:
 
-`python setup.py install --user`
+```
+python setup.py install --user
+```
 
 ## Example Use
 
@@ -49,7 +55,9 @@ By default, SWD will acquire the first available device in its list of known dev
 use 1.8MHz as the default frequency.
 This can be altered by specifying device and/or frequency (in KHz) through keyword arguments:
 
-`>>> s = swd.SWD(device=STLink/V2, speed=1800)`
+```
+>>> s = swd.SWD(device=STLink/V2, speed=1800)
+```
 
 A list of known hardware devices can also be returned:
 
