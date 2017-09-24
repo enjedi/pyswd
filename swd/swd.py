@@ -135,7 +135,7 @@ class SWD():
             raise SWDException('Address must be in multiples of 4')
         if size % 4:
             raise SWDException('Size must be in multiples of 4')
-        if size > self._dev.MAXIMUM_TRANSFER_SIZE:
+        if size > self._dev.MAX_TRANSFER_SIZE:
             raise SWDException('Size is larger than maximum')
         cmd = [
             self._dev.CMD.DEBUG,
@@ -150,7 +150,7 @@ class SWD():
             raise SWDException('Address must be in multiples of 4')
         if len(data) % 4:
             raise SWDException('Size must be in multiples of 4')
-        if len(data) > self._dev.MAXIMUM_TRANSFER_SIZE:
+        if len(data) > self._dev.MAX_TRANSFER_SIZE:
             raise SWDException('Size is larger than maximum')
         cmd = [
             self._dev.CMD.DEBUG,
@@ -161,7 +161,7 @@ class SWD():
 
     def read_mem8(self, addr, size):
         """Read memory (8 bits access)"""
-        if size > self._dev.MAXIMUM_8BIT_DATA:
+        if size > self._dev.MAX_8BIT_DATA:
             raise SWDException('Too much bytes to read')
         cmd = [self._dev.CMD.DEBUG, self._dev.DEBUG.READMEM_8BIT]
         cmd.extend(list(addr.to_bytes(4, byteorder='little')))
@@ -170,7 +170,7 @@ class SWD():
 
     def write_mem8(self, addr, data):
         """Write memory (8 bits access)"""
-        if len(data) > self._dev.MAXIMUM_8BIT_DATA:
+        if len(data) > self._dev.MAX_8BIT_DATA:
             raise SWDException('Too much bytes to write')
         cmd = [self._dev.CMD.DEBUG, self._dev.DEBUG.WRITEMEM_8BIT]
         cmd.extend(list(addr.to_bytes(4, byteorder='little')))
