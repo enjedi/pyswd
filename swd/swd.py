@@ -89,93 +89,93 @@ class SWD():
         res = self._comm.xfer(cmd, rx_len=4)
         return int.from_bytes(res[:4], byteorder='little')
 
-#    def get_reg(self, reg):
-#        """Get core register"""
-#        cmd = [
-#            STLink.STLINK_DEBUG_COMMAND,
-#            STLink.STLINK_DEBUG_A2_READREG,
-#            reg]
-#        res = self._com.xfer(cmd, rx_len=8)
-#        return int.from_bytes(res[4:8], byteorder='little')
-#
-#    def set_reg(self, reg, data):
-#        """Set core register"""
-#        cmd = [
-#            STLink.STLINK_DEBUG_COMMAND,
-#            STLink.STLINK_DEBUG_A2_WRITEREG,
-#            reg]
-#        cmd.extend(list(data.to_bytes(4, byteorder='little')))
-#        self._com.xfer(cmd, rx_len=2)
-#
-#    def set_mem32(self, addr, data):
-#        """Set memory register (32 bits)"""
-#        if addr % 4:
-#            raise STLinkException('address is not in multiples of 4')
-#        cmd = [
-#            STLink.STLINK_DEBUG_COMMAND,
-#            STLink.STLINK_DEBUG_A2_WRITEDEBUGREG]
-#        cmd.extend(list(addr.to_bytes(4, byteorder='little')))
-#        cmd.extend(list(data.to_bytes(4, byteorder='little')))
-#        self._com.xfer(cmd, rx_len=2)
-#
-#    def get_mem32(self, addr):
-#        """Get memory register (32 bits)"""
-#        if addr % 4:
-#            raise STLinkException('address is not in multiples of 4')
-#        cmd = [
-#            STLink.STLINK_DEBUG_COMMAND,
-#            STLink.STLINK_DEBUG_A2_READDEBUGREG]
-#        cmd.extend(list(addr.to_bytes(4, byteorder='little')))
-#        res = self._com.xfer(cmd, rx_len=8)
-#        return int.from_bytes(res[4:8], byteorder='little')
-#
-#    def read_mem32(self, addr, size):
-#        """Read memory (32 bits access)"""
-#        if addr % 4:
-#            raise STLinkException('Address must be in multiples of 4')
-#        if size % 4:
-#            raise STLinkException('Size must be in multiples of 4')
-#        if size > STLink.STLINK_MAXIMUM_TRANSFER_SIZE:
-#            raise STLinkException('Too much bytes to read')
-#        cmd = [
-#            STLink.STLINK_DEBUG_COMMAND,
-#            STLink.STLINK_DEBUG_READMEM_32BIT]
-#        cmd.extend(list(addr.to_bytes(4, byteorder='little')))
-#        cmd.extend(list(size.to_bytes(4, byteorder='little')))
-#        return self._com.xfer(cmd, rx_len=size)
-#
-#    def write_mem32(self, addr, data):
-#        """Write memory (32 bits access)"""
-#        if addr % 4:
-#            raise STLinkException('Address must be in multiples of 4')
-#        if len(data) % 4:
-#            raise STLinkException('Size must be in multiples of 4')
-#        if len(data) > STLink.STLINK_MAXIMUM_TRANSFER_SIZE:
-#            raise STLinkException('Too much bytes to write')
-#        cmd = [
-#            STLink.STLINK_DEBUG_COMMAND,
-#            STLink.STLINK_DEBUG_WRITEMEM_32BIT]
-#        cmd.extend(list(addr.to_bytes(4, byteorder='little')))
-#        cmd.extend(list(len(data).to_bytes(4, byteorder='little')))
-#        self._com.xfer(cmd, data=data)
-#
-#    def read_mem8(self, addr, size):
-#        """Read memory (8 bits access)"""
-#        if size > STLink.STLINK_MAXIMUM_8BIT_DATA:
-#            raise STLinkException('Too much bytes to read')
-#        cmd = [STLink.STLINK_DEBUG_COMMAND, STLink.STLINK_DEBUG_READMEM_8BIT]
-#        cmd.extend(list(addr.to_bytes(4, byteorder='little')))
-#        cmd.extend(list(size.to_bytes(4, byteorder='little')))
-#        return self._com.xfer(cmd, rx_len=size)
-#
-#    def write_mem8(self, addr, data):
-#        """Write memory (8 bits access)"""
-#        if len(data) > STLink.STLINK_MAXIMUM_8BIT_DATA:
-#            raise STLinkException('Too much bytes to write')
-#        cmd = [STLink.STLINK_DEBUG_COMMAND, STLink.STLINK_DEBUG_WRITEMEM_8BIT]
-#        cmd.extend(list(addr.to_bytes(4, byteorder='little')))
-#        cmd.extend(list(len(data).to_bytes(4, byteorder='little')))
-#        self._com.xfer(cmd, data=data)
+    def get_reg(self, reg):
+        """Get core register"""
+        cmd = [
+            self._dev.CMD.DEBUG,
+            self._dev.DEBUG.A2.READREG,
+            reg]
+        res = self._comm.xfer(cmd, rx_len=8)
+        return int.from_bytes(res[4:8], byteorder='little')
+
+    def set_reg(self, reg, data):
+        """Set core register"""
+        cmd = [
+            self._dev.CMD.DEBUG,
+            self._dev.DEBUG.A2.WRITEREG,
+            reg]
+        cmd.extend(list(data.to_bytes(4, byteorder='little')))
+        self._comm.xfer(cmd, rx_len=2)
+
+    def set_mem32(self, addr, data):
+        """Set memory register (32 bits)"""
+        if addr % 4:
+            raise SWDException('address is not in multiples of 4')
+        cmd = [
+            self._dev.CMD.DEBUG,
+            self._dev.DEBUG.A2.WRITEDEBUGREG]
+        cmd.extend(list(addr.to_bytes(4, byteorder='little')))
+        cmd.extend(list(data.to_bytes(4, byteorder='little')))
+        self._comm.xfer(cmd, rx_len=2)
+
+    def get_mem32(self, addr):
+        """Get memory register (32 bits)"""
+        if addr % 4:
+            raise SWDException('address is not in multiples of 4')
+        cmd = [
+            self._dev.CMD.DEBUG,
+            self._dev.DEBUG.A2.READDEBUGREG]
+        cmd.extend(list(addr.to_bytes(4, byteorder='little')))
+        res = self._comm.xfer(cmd, rx_len=8)
+        return int.from_bytes(res[4:8], byteorder='little')
+
+    def read_mem32(self, addr, size):
+        """Read memory (32 bits access)"""
+        if addr % 4:
+            raise SWDException('Address must be in multiples of 4')
+        if size % 4:
+            raise SWDException('Size must be in multiples of 4')
+        if size > self._dev.MAXIMUM_TRANSFER_SIZE:
+            raise SWDException('Size is larger than maximum')
+        cmd = [
+            self._dev.CMD.DEBUG,
+            self._dev.DEBUG.READMEM_32BIT]
+        cmd.extend(list(addr.to_bytes(4, byteorder='little')))
+        cmd.extend(list(size.to_bytes(4, byteorder='little')))
+        return self._comm.xfer(cmd, rx_len=size)
+
+    def write_mem32(self, addr, data):
+        """Write memory (32 bits access)"""
+        if addr % 4:
+            raise SWDException('Address must be in multiples of 4')
+        if len(data) % 4:
+            raise SWDException('Size must be in multiples of 4')
+        if len(data) > self._dev.MAXIMUM_TRANSFER_SIZE:
+            raise SWDException('Size is larger than maximum')
+        cmd = [
+            self._dev.CMD.DEBUG,
+            self._dev.DEBUG.WRITEMEM_32BIT]
+        cmd.extend(list(addr.to_bytes(4, byteorder='little')))
+        cmd.extend(list(len(data).to_bytes(4, byteorder='little')))
+        self._comm.xfer(cmd, data=data)
+
+    def read_mem8(self, addr, size):
+        """Read memory (8 bits access)"""
+        if size > self._dev.MAXIMUM_8BIT_DATA:
+            raise SWDException('Too much bytes to read')
+        cmd = [self._dev.CMD.DEBUG, self._dev.DEBUG.READMEM_8BIT]
+        cmd.extend(list(addr.to_bytes(4, byteorder='little')))
+        cmd.extend(list(size.to_bytes(4, byteorder='little')))
+        return self._comm.xfer(cmd, rx_len=size)
+
+    def write_mem8(self, addr, data):
+        """Write memory (8 bits access)"""
+        if len(data) > self._dev.MAXIMUM_8BIT_DATA:
+            raise SWDException('Too much bytes to write')
+        cmd = [self._dev.CMD.DEBUG, self._dev.DEBUG.WRITEMEM_8BIT]
+        cmd.extend(list(addr.to_bytes(4, byteorder='little')))
+        cmd.extend(list(len(data).to_bytes(4, byteorder='little')))
+        self._comm.xfer(cmd, data=data)
 
 if __name__ == "__main__":
     swd = SWD()
