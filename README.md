@@ -1,96 +1,67 @@
 # PYSWD
 
-Debugging MCUs over SWD with ST-Link/V2 debugger
+## Introduction
 
-Allow to access not only STM32 MCUs!!!
+The goal of this module is to provide functional SWD using third-party, off-the-shelf
+hardware devices.
 
-## Python library
+As this is designed to provide general SWD use via Python, it is not locked to interacting
+with any particular architecture. It's functionality is only dependent upon the firmware
+of the host SWD device.
 
-Allow direct access to SWD
+This has been developed and tested primarily with Python3.5 on Debian-based Linux.
 
-`import swd`
+## Installation
 
-constructor for connected swd device:
+This installation procedure is targeted for Debian-based Linux distributions.
 
-`dev = swd.stlink.Stlink()`
+### Dependencies
 
-all public methods from `swd.stlink.Stlink` class:
+* libusb-1.0.0
+* [PyUSB 1.0](https://github.com/walac/pyusb)
 
-`com(self)`
-instance to Communication class
+Install the basic packages:
 
-`version(self)`
-ST-Link version
+`sudo apt-get install python3-dev libusb-1.0.0`
 
-`get_target_voltage(self)`
-Get target voltage from programmer
+[Install PyUSB](https://github.com/walac/pyusb).
 
-`get_coreid(self)`
-Get core ID from MCU
+For system-wide installation of this module:
 
-`get_reg(self, reg)`
-Get core register (R0, R1, ... )
+`sudo python setup.py install`
 
-`set_reg(self, reg, data)`
-Set core register
+For only local user installation:
 
-`set_mem32(self, addr, data)`
-Set memory register (32 bits)
+`python setup.py install --user`
 
-`get_mem32(self, addr)`
-Get memory register (32 bits)
+## Example Use
 
-`read_mem32(self, addr, size)`
-Read memory (32 bits access)
+The full example is embedded as the `__main__` call to `python swd/swd.py`.
 
-`write_mem32(self, addr, data)`
-Write memory (32 bits access)
+General Python scripts can call on it as any other module:
 
-`read_mem8(self, addr, size)`
-Read memory (8 bits access)
-
-`write_mem8(self, addr, data)`
-Write memory (8 bits access)
-
-### Example:
-
-```Python
+```
 >>> import swd
-
->>> dev = swd.stlink.Stlink()
-
->>> dev.version.str
-'ST-Link/V2 V2J27S6'
-
->>> dev.get_target_voltage()
-3.201045068582626
-
->>> hex(dev.get_coreid())
-'0xbb11477'
-
->>> hex(dev.get_mem32(0x08000000))
-'0x20001000'
-
->>> dev.set_mem32(0x20000200, 0x12345678)
-
->>> hex(dev.get_mem32(0x20000200))
-'0x12345678
-
->>> data = dev.read_mem32(0x08000000, 256)
-
->>> ' '.join(['%02x' % d for d in data])
-'00 10 00 20 65 03 00 08 5d 03 00 08 c1 00 00 08 5d 03 00 08 5d 03 00 08 5d 03 00 08 5d 03 00 08'
-
->>> dev.write_mem8(0x20000100, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])
-data = dev.read_mem8(0x20000100, 15)
-
->>> ' '.join(['%02x' % d for d in data])
-'01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f'
-
->>> hex(dev.get_reg(1))
-'0x0800012e'
+>>> s = swd.SWD()
 ```
 
-## Python application
+By default, SWD will acquire the first available device in its list of known devices and
+use 1.8MHz as the default frequency.
+This can be altered by specifying device and/or frequency (in KHz) through keyword arguments:
 
-TODO
+`>>> s = swd.SWD(device=STLink/V2, speed=1800)`
+
+A list of known hardware devices can also be returned:
+
+```
+>>> s.comm.get_device_list()
+['STLink/V2', 'STLink/V2-1']
+```
+
+---
+
+## Credit
+
+This project is a fork of
+[pavelrevak's pyswd project](https://github.com/pavelrevak/pyswd),
+and has been retrofitted for my own tastes and functionality desires.
