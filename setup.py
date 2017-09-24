@@ -1,4 +1,5 @@
-"""A setup tools based setup module.
+"""setup.py
+A setup tools based setup module.
 """
 
 import setuptools
@@ -14,12 +15,12 @@ def get_long_description():
 
 setuptools.setup(
     name='pyswd',
-    version='0.0.1',
-    description='SWD debugging tool',
+    version='1.0.0',
+    description='Basic SWD functionality on third-party firmware',
     long_description=get_long_description(),
-    url='https://github.com/pavelrevak/pyswd',
-    author='Pavel Revak',
-    author_email='pavel.revak@gmail.com',
+    url='https://github.com/enjedi/pyswd',
+    author='Enjedi',
+    author_email='enjedi01@gmail.com',
     license='MIT',
     keywords='SWD debugger STM32 STLINK',
 
