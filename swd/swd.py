@@ -10,6 +10,10 @@ class SWDException(Exception):
     """Exception raised for general SWD issues."""
 
 
+class InvalidFrequencyError(SWDException):
+    pass
+
+
 class SWD():
     """ST-Link protocol"""
     def __init__(self, **kwargs):
