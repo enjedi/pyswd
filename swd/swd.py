@@ -178,5 +178,27 @@ class SWD():
         self._comm.xfer(cmd, data=data)
 
 if __name__ == "__main__":
+    """Functionality debugging and example"""
     swd = SWD()
-    print(swd.get_target_voltage())
+    print("Device: {}".format(swd.comm.get_device()))
+    print(swd.comm.get_device_info())
+    print("Target Voltage: {}".format(swd.get_target_voltage()))
+    print("Core ID: {}".format(swd._coreid))
+    get_reg = 0x08000000
+    print("Register {0}: {1}".format(hex(get_reg), hex(swd.get_mem32(get_reg))))
+    set_reg = 0x20000200
+    reg_val = 0x12345678
+    print("Set {0} to {1}".format(hex(set_reg), hex(reg_val)))
+    swd.set_mem32(set_reg, reg_val)
+    print("Register {0}: {1}".format(hex(set_reg), hex(swd.get_mem32(set_reg))))
+    bytes_to_read = 256
+    print("Read {0} bytes from {1}:".format(bytes_to_read, hex(get_reg)))
+    data = swd.read_mem32(get_reg, bytes_to_read)
+    print(' '.join(['%02x' % d for d in data]))
+    l = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+    set_reg = 0x20000100
+    print("Write {0} to {1}:".format(l, hex(set_reg)))
+    swd.write_mem8(set_reg, l)
+    data = swd.read_mem8(set_reg, len(l))
+    print(' '.join(['%02x' % d for d in data]))
+    print("Read R1: {}".format(hex(swd.get_reg(1))))
