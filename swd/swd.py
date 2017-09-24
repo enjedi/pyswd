@@ -27,11 +27,6 @@ class SWD():
         """Communication class"""
         return self._comm
 
-    @property
-    def info(self):
-        """Device information"""
-        return self._info
-
 #    def leave_state(self):
 #        """Leave current state of ST-Link"""
 #        res = self._com.xfer([STLink.STLINK_GET_CURRENT_MODE], rx_len=2)
