@@ -36,10 +36,4 @@ setuptools.setup(
     packages=[
         'swd'
     ],
-
-    entry_points={
-        'console_scripts': [
-            'pyswd=swd:main',
-        ],
-    },
 )
