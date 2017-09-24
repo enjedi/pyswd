@@ -12,9 +12,8 @@ class SWDException(Exception):
 
 class SWD():
     """ST-Link protocol"""
-    def __init__(self):
-        self._comm = usbcom.USBCom()
-        self._info = self.get_info()
+    def __init__(self, use_device=None):
+        self._comm = usbcom.USBCom(use_device)
 #        self.leave_state()
 #        self._target_volgtage = self.read_target_voltage()
 #        if self._version.jtag >= 22:
