@@ -13,7 +13,7 @@ class Device(object):
     """
     def __init__(self, description):
         self._description       = description
-        self.INFO               = None
+        self.VERSION            = None
         self.ID_VENDOR          = None
         self.ID_PRODUCT         = None
         self.PIPE_OUT           = None
@@ -24,7 +24,7 @@ class Device(object):
     def __str__(self):
         return self._description
 
-    def load_device_info(self):
+    def load_version_info(self):
         pass
 
 
@@ -139,12 +139,12 @@ class STLink(Device):
             # 5000:  798
         }
 
-    def load_device_info(self, version):
+    def load_version_info(self, version):
         stlink = (version >> 12) & 0xf
         jtag = (version >> 6) & 0x3f
         mass_swim = (version & 0x3f)
         api = 2 if jtag > 11 else 1
-        self.INFO = '{0} V{1}J{2}{3}{4} API{5}'.format(
+        self.VERSION = '{0} V{1}J{2}{3}{4} API{5}'.format(
             self._description,
             stlink,
             jtag,
