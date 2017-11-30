@@ -18,9 +18,9 @@ setuptools.setup(
     version='1.0.0',
     description='Basic SWD functionality on third-party firmware',
     long_description=get_long_description(),
-    url='https://github.com/enjedi/pyswd',
-    author='Enjedi',
-    author_email='enjedi01@gmail.com',
+    url='https://github.com/stephen-st/pyswd',
+    author='Stephen-ST',
+    author_email='sstauts@gmail.com',
     license='MIT',
     keywords='SWD debugger STM32 STLINK',
 
